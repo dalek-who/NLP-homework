@@ -1,5 +1,5 @@
 
-class BaseModel(object):
+class BaseAPI(object):
     def __init__(self):
         pass
 

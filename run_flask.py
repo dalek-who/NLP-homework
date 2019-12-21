@@ -1,11 +1,18 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-from BaseModel import BaseModel
+from BaseAPI import BaseAPI
+from models.ALBERT.ALBERT import ALBERT_API
+from models.LSTM.LSTM import LSTM_API
+from models.NaiveBayes.interface import NaiveBayes_API
 
 app = Flask(__name__)
 api = Api(app)
 
-record = []
+model_API = {
+    "ALBERT": ALBERT_API(),
+    "NaiveBayer": None,
+    "LSTM": LSTM_API(),
+}
 
 class DemoResource(Resource):
     def __init__(self):
@@ -16,11 +23,12 @@ class DemoResource(Resource):
 
     def post(self):
         args = self.parser.parse_args()
-        record.append((args["model"], args["text"]))
-        return {"result": 1}
+        model = model_API[args["model"]]
+        result = model.run_example(args["text"])
+        return {"result": result}
 
 
-api.add_resource(DemoResource, '/demo/')
+api.add_resource(DemoResource, '/demo')
 
 if __name__ == '__main__':
-    app.run(debug=True, host="localhost", port=5100)
+    app.run(debug=True, host="localhost", port=5100, threaded=False)
