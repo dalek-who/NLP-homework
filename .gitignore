@@ -7,5 +7,4 @@
 *.iml
 out
 gen
-*.bin
 albert_pytorch
