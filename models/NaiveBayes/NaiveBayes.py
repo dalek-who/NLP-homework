@@ -5,7 +5,7 @@ import os
 class NaiveBayes():
     total0=506762
     total1=2925103
-    total2=177864
+    total2=1777864
     count0=44080
     count2=87430
     count1=87450
