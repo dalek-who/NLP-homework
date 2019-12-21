@@ -10,8 +10,14 @@ api = Api(app)
 
 model_API = {
     "ALBERT": ALBERT_API(),
-    "NaiveBayer": None,
+    "NaiveBayes": NaiveBayes_API(),
     "LSTM": LSTM_API(),
+}
+
+label_dict = {
+    0: "正面",
+    1: "中性",
+    2: "负面"
 }
 
 class DemoResource(Resource):
@@ -25,7 +31,7 @@ class DemoResource(Resource):
         args = self.parser.parse_args()
         model = model_API[args["model"]]
         result = model.run_example(args["text"])
-        return {"result": result}
+        return {"result": label_dict[result]}
 
 
 api.add_resource(DemoResource, '/demo')
