@@ -4,7 +4,6 @@ from keras.layers.recurrent import LSTM
 from keras.layers.core import Dense, Dropout, Activation
 from keras.utils import to_categorical
 from keras.models import load_model
-from BaseAPI import BaseAPI
 
 import os
 import pandas as pd
@@ -12,6 +11,10 @@ import jieba
 import re
 import numpy as np
 from pathlib import Path
+from multiprocessing import Queue, Process, current_process
+from argparse import ArgumentParser
+import json
+
 
 vocab_size = 1000#单词总数
 input_shape = 200#序列长度
@@ -22,7 +25,6 @@ label_size = 2
 
 
 word_dic_path = 'word_dict.pk'
-
 
 def find_chinese(file):
     pattern = re.compile(r'[^\u4e00-\u9fa5]')
@@ -111,27 +113,29 @@ def train_lstm(model_path,train_x, train_y, test_x, test_y):
     model.save(model_path)
 
 
-class LSTM_API(BaseAPI):
-    def __init__(self):
-        super(LSTM_API, self).__init__()
-        self.path = Path(__file__)
-        self.model = load_model(self.path.parent / 'LSTM.h5')
-        self.model.compile(loss='categorical_crossentropy',
-                      optimizer='adam',
-                      metrics=['accuracy'])
+# class LSTM_API(BaseAPI):
+#     def __init__(self):
+#         super(LSTM_API, self).__init__()
+#         self.path = Path(__file__)
+#         self.model = load_model(self.path.parent / 'LSTM.h5')
+#         self.model.compile(loss='categorical_crossentropy',
+#                       optimizer='adam',
+#                       metrics=['accuracy'])
+#
+#     def run_example(self, text: str):
+#         word_list = [line.strip() for line in open(self.path.parent / 'sorted_words.txt', encoding='utf-8').readlines()]
+#         str = find_chinese(text)
+#         title_vec ,content_vec=[0 for _ in range(1000)],[0 for _ in range(1000)]
+#         for word in jieba.lcut(text):
+#             if word in word_list:
+#                 title_vec[word_list.index(word)]=1
+#                 content_vec[word_list.index(word)] = 1
+#         x = np.array([title_vec,content_vec])
+#         x = np.array([x])
+#         y = self.model.predict(x)
+#         return np.argmax(y)
 
-    def run_example(self, text: str):
-        word_list = [line.strip() for line in open(self.path.parent / 'sorted_words.txt', encoding='utf-8').readlines()]
-        str = find_chinese(text)
-        title_vec ,content_vec=[0 for _ in range(1000)],[0 for _ in range(1000)]
-        for word in jieba.lcut(text):
-            if word in word_list:
-                title_vec[word_list.index(word)]=1
-                content_vec[word_list.index(word)] = 1
-        x = np.array([title_vec,content_vec])
-        x = np.array([x])
-        y = self.model.predict(x)
-        return np.argmax(y)
+
 
 if __name__ =='__main__':
     # train_filepath = 'train.csv'
@@ -142,6 +146,29 @@ if __name__ =='__main__':
     # train_x ,train_y = load_data1(train_filepath)
     # test_x ,test_y = load_data1(test_filepath)
     # train_lstm(model_path,train_x,train_y,test_x,test_y)
-    model = LSTM_API()
-    res =model.run_example('"热烈庆祝中华人民共和国成立七十周年\n 喜闻乐见，大快人心，普天同庆，奔走相告"')
-    print(res)
+
+    # model = LSTM_API()
+    # res =model.run_example('"热烈庆祝中华人民共和国成立七十周年\n 喜闻乐见，大快人心，普天同庆，奔走相告"')
+    # print(res)
+    parser = ArgumentParser()
+    parser.add_argument("--text", type=str)
+    args = parser.parse_args()
+    text = args.text
+
+    path = Path(__file__)
+    model = load_model(path.parent / 'LSTM.h5')
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    word_list = [line.strip() for line in open(path.parent / 'sorted_words.txt', encoding='utf-8').readlines()]
+    title_vec, content_vec = [0 for _ in range(1000)], [0 for _ in range(1000)]
+    for word in jieba.lcut(text):
+        if word in word_list:
+            title_vec[word_list.index(word)] = 1
+            content_vec[word_list.index(word)] = 1
+    x = np.array([title_vec, content_vec])
+    x = np.array([x])
+    y = model.predict(x)
+    result = np.argmax(y)
+    with open(path.parent / "result.txt", "w") as f:
+        f.write(str(result))
+
