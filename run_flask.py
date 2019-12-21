@@ -1,8 +1,8 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from BaseAPI import BaseAPI
-from models.ALBERT.ALBERT import ALBERT_API
-from models.LSTM.LSTM import LSTM_API
+from models.ALBERT.interface import ALBERT_API
+from models.LSTM.interface import LSTM_API
 from models.NaiveBayes.interface import NaiveBayes_API
 
 app = Flask(__name__)
