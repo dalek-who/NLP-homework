@@ -1,17 +1,17 @@
 from flask import Blueprint,send_file,Flask,request,jsonify
 from flask_restful import Resource, Api, reqparse
 from BaseAPI import BaseAPI
-#from models.ALBERT.ALBERT import ALBERT_API
-#from models.LSTM.LSTM import LSTM_API
+from models.ALBERT.interface import ALBERT_API
+from models.LSTM.interface import LSTM_API
 from models.NaiveBayes.interface import NaiveBayes_API
 
 app = Flask(__name__)
 api = Api(app)
 
 model_API = {
-    #"ALBERT": ALBERT_API(),
+    "ALBERT": ALBERT_API(),
     "NaiveBayes": NaiveBayes_API(),
-    #"LSTM": LSTM_API(),
+    "LSTM": LSTM_API(),
 }
 
 label_dict = {

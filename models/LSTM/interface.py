@@ -27,4 +27,3 @@ if __name__ == "__main__":
     text = "热烈庆祝中华人民共和国成立"
     api = LSTM_API()
     print(api.run_example(text))
-
