@@ -5,11 +5,11 @@
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<script type="text/javascript" src="./js/jquery-3.4.1.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
-		<link rel="stylesheet" type="text/css" href="./css/global.css-b981ec9.css" />
-		<link rel="stylesheet" type="text/css" href="./css/demo.css-b981ec9.css" /> 
-		<link rel="" </head> <body>
+		<script type="text/javascript" src="static/js/jquery-3.4.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="static/css/global.css-b981ec9.css" />
+		<link rel="stylesheet" type="text/css" href="static/css/demo.css-b981ec9.css" />
+    </head> <body>
 		<div id="content-page">
 			<div id="demo-page">
 				<div id="demo-container" class="container">
@@ -20,11 +20,12 @@
 					</div>
 					<div class="input-chunk chunk">
 						<textarea id="txt-analysis" class="input"></textarea>
-						<button type="button" class="btn btn-primary" id="btn-analysis" data-toggle="button" aria-pressed="false" autocomplete="off">
-						 提交文本
-						</button>
+						<button type="button" onclick="analysis()" class="btn btn-primary" id="btn-analysis" data-toggle="button" aria-pressed="false" autocomplete="off">
+                        提交文本
+                        </button>
+
 						<div class="col-md-4 column">
-							
+
 							  <label for="email" class="col-md-4 column">使用模型</label>	
 							    <div class="col-md-6">	
 									<select id="model" class="form-control">
@@ -38,14 +39,14 @@
 						</div>
 					</div>
 					<div class="main-title">
-						<span class="dot-line-gray"></span>
+
 						<span class="title">分析结果</span>
 					</div>
 					<div class="demo-content">
 						<div class="col-md-12 main-content" role="main">
 							<div id="overview-emotion" class="chunk">
 								<div id="result" class="row">
-										
+
 								</div>
 							</div>
 						</div>
@@ -57,31 +58,32 @@
 </html>
 
 <script tpye="text/javascript">
-	$(function() {
-		$('#btn-analysis').click(function() {
+	function analysis() {
+
 			if (!$('#txt-analysis').val()) {
 				alert('请输入要分析的文本！')
-
 			} else if($('#model').val()=='请选择')
 			{
 				alert('清选择要使用的模型！')
 			}
 			else {
-				$.ajax({
-					type: "POST",
-					url: "http://localhost:5100/demo",
-					data: {
-						model: $("#model").val(),
-						text: $("#txt-analysis").val()
-					},
-					dataType: "json",
-					success: function(data) {
-						var html =''
-						 html += '<center><h3>'+data.result+'</h3></center>';
-						$('#result').html(html)
-					},
-				});
-			}
-		});
-	});
+			    var reqdata ={
+			        model: $("#model").val(),
+                    text: $("#txt-analysis").val()
+                }
+                var req_data = JSON.stringify(reqdata)
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:5000/demo",
+                    data:req_data,
+                    contentType:"application/json",
+                    dataType: "json",
+                    success: function (data) {
+                        var html = ''
+                        html += '<center><h3>' + data.result + '</h3></center>';
+                        $('#result').html(html)
+                    },
+                });
+            }
+    };
 </script>
