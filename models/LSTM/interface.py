@@ -10,15 +10,20 @@ class LSTM_API(BaseAPI):
         super(LSTM_API, self).__init__()
 
     def run_example(self, text: str):
-        command = f"""python {self.path.parent / "LSTM.py"} --text={text}"""
+        command = f"""python {self.path.parent / "LSTM.py"} --text="{text}" """
         result_file: Path = self.path.parent / "result.txt"
         if result_file.exists():
             os.remove(result_file)
         os.system(command=command)
-        while not result_file.exists():
+        wait_times = 0
+        while not result_file.exists() and wait_times<20:
+            wait_times += 1
             sleep(1)
-        with open(result_file) as f:
-            result = int(f.read())
+        if wait_times>=20:
+            result = -1
+        else:
+            with open(result_file) as f:
+                result = int(f.read())
         if result_file.exists():
             os.remove(result_file)
         return result
