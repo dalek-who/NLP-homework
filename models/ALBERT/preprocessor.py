@@ -1,8 +1,8 @@
 import torch
 import csv
-from albert_pytorch.callback.progressbar import ProgressBar
+from models.ALBERT.train_albert_pytorch.callback.progressbar import ProgressBar
 from models.ALBERT.model.tokenization_bert import BertTokenizer
-from albert_pytorch.common.tools import logger
+from models.ALBERT.train_albert_pytorch.common.tools import logger
 from torch.utils.data import Dataset
 import pandas as pd
 
