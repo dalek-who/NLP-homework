@@ -47,6 +47,7 @@
 							<div id="overview-emotion" class="chunk">
 								<div id="result" class="row">
 
+
 								</div>
 							</div>
 						</div>
@@ -54,12 +55,16 @@
 				</div>
 			</div>
 		</div>
-		</body>
+    </body>
 </html>
 
 <script tpye="text/javascript">
 	function analysis() {
-
+           var html = ""
+           html += "<center>\n" +
+               "                                        <img src=\"static/1.gif\" width=\"200\">\n" +
+               "                                    </center>";
+            $('#result').html(html)
 			if (!$('#txt-analysis').val()) {
 				alert('请输入要分析的文本！')
 			} else if($('#model').val()=='请选择')
@@ -74,13 +79,14 @@
                 var req_data = JSON.stringify(reqdata)
                 $.ajax({
                     type: "POST",
-                    url: "http://127.0.0.1:5000/demo",
+                    url: "/demo",
                     data:req_data,
                     contentType:"application/json",
                     dataType: "json",
                     success: function (data) {
+
                         var html = ''
-                        html += '<center><h3>' + data.result + '</h3></center>';
+                        html += '<center><h3>该文本的情感分析结果是:' + data.result + '</h3></center>';
                         $('#result').html(html)
                     },
                 });

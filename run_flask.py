@@ -1,5 +1,7 @@
 from flask import Blueprint,send_file,Flask,request,jsonify
 from flask_restful import Resource, Api, reqparse
+from time import sleep
+
 from BaseAPI import BaseAPI
 from models.ALBERT.interface import ALBERT_API
 from models.LSTM.interface import LSTM_API
@@ -46,6 +48,7 @@ def demo1():
     result = model.run_example(text)
     result_dict =label_dict[result]
     print(result_dict)
+    sleep(1)
     return jsonify({"result":result_dict})
 # api.add_resource(DemoResource, '/demo')
 
