@@ -7,6 +7,8 @@
 *.iml
 out
 gen
-*.bin
-*.npy
-*.csv
+tf_param/
+pretrain/
+outputs/
+dataset/
+.DS_Store
